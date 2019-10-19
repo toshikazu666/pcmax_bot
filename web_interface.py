@@ -68,7 +68,7 @@ class WebInterface:
         payload = {'city': city}
         res = requests.get(url, params=payload)
         forecast = res.json()['forecasts'][1]
-        # たまに取れないことがあるので、取れない場合は例外を補足して"-"とする
+        # たまに取れないことがあるので、取れない場合は例外を捕捉して"-"とする
         try:
             weather = forecast['telop']
         except:
