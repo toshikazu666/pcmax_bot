@@ -12,7 +12,7 @@ PURE = '1'
 ADULT = '2'
 
 MORNING_TIME = '07:00'
-NIGHT_TIME = '24:00'
+NIGHT_TIME = '23:00'
 
 config = ConfigParser()
 config.read('settings.ini')
@@ -25,11 +25,11 @@ def generate_from_template(directory, template_file, data):
 
 def generate_data_for_morning(web):
     # 朝のつぶやき用の情報を取得する
-    # WikipediaのAPIから「今日は何の日」かを取得する
     today = datetime.date.today()
     month = str(today.month)
     day = str(today.day)
     weekday = WEEKDAYS[today.weekday()]
+    # WikipediaのAPIから「今日は何の日」かを取得する
     url = config.get('event', 'url').replace('MONTH', month)
     date = '%s月%s日' % (month, day)
     event = web.get_today_event(url, date)
@@ -41,6 +41,11 @@ def generate_data_for_morning(web):
 
 def generate_data_for_night(web):
     # 夜のつぶやき用の情報を取得する
+    today = datetime.date.today()
+    tommorrow = today + datetime.timedelta(days=1)
+    month = str(tommorrow.month)
+    day = str(tommorrow.day)
+    weekday = WEEKDAYS[tommorrow.weekday()]
     # LivedoorのAPIから東京/大阪/名古屋の天気と気温を収録する
     url = config.get('weather', 'url')
     tokyo = config.get('weather', 'tokyo')
@@ -50,6 +55,9 @@ def generate_data_for_night(web):
     forecast_osaka = web.get_today_weather(url, osaka)
     forecast_nagoya = web.get_today_weather(url, nagoya)
     return {'pattern': 'night',
+            'month': month,
+            'day': day,
+            'weekday': weekday,
             'weather_tokyo': forecast_tokyo['weather'],
             'max_tokyo': forecast_tokyo['max'],
             'min_tokyo': forecast_tokyo['min'],
@@ -61,8 +69,9 @@ def generate_data_for_night(web):
             'min_nagoya': forecast_nagoya['min']}
 
 def morning_tweet():
-    # Web用のインスタンスを生成してつぶやきをポストする
+    # Web用のインスタンスを生成してつぶやきをポストする(朝用)
     try:
+        print('/*--- tweet begin ---*/')
         login_url = config.get('pcmax', 'login_url')
         login_user = os.environ.get('LOGIN_USER')
         login_password = os.environ.get('LOGIN_PASSWORD')
@@ -74,12 +83,14 @@ def morning_tweet():
         print(datetime.datetime.now().strftime('%Y/%m/%d %H:%M'))
         print(tweet_text.decode('shift_jis'))
         print(web.post_tweet(tweet_url, tweet_input, tweet_text).status_code)
+        print('/*--- tweet end ---*/')
     except Exception as e:
         print(e)
 
 def night_tweet():
-    # 上と全く同じ。スケジュールに登録する都合でメソッドを分けている
+    #  Web用のインスタンスを生成してつぶやきをポストする(夜用)
     try:
+        print('/*--- tweet begin ---*/')
         login_url = config.get('pcmax', 'login_url')
         login_user = os.environ.get('LOGIN_USER')
         login_password = os.environ.get('LOGIN_PASSWORD')
@@ -91,13 +102,13 @@ def night_tweet():
         print(datetime.datetime.now().strftime('%Y/%m/%d %H:%M'))
         print(tweet_text.decode('shift_jis'))
         print(web.post_tweet(tweet_url, tweet_input, tweet_text).status_code)
+        print('/*--- tweet end ---*/')
     except Exception as e:
         print(e)
 
 def main():
     schedule.every().day.at(MORNING_TIME).do(morning_tweet)
     schedule.every().day.at(NIGHT_TIME).do(night_tweet)
-    
     while True:
         schedule.run_pending()
         time.sleep(10)
