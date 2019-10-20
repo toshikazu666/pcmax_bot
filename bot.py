@@ -46,7 +46,7 @@ def generate_data_for_night(web):
     month = str(tommorrow.month)
     day = str(tommorrow.day)
     weekday = WEEKDAYS[tommorrow.weekday()]
-    # LivedoorのAPIから東京/大阪/名古屋の天気と気温を収録する
+    # LivedoorのAPIから東京/大阪/名古屋の天気と気温を取得する
     url = config.get('weather', 'url')
     tokyo = config.get('weather', 'tokyo')
     osaka = config.get('weather', 'osaka')
