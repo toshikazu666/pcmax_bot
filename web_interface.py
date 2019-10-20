@@ -68,20 +68,20 @@ class WebInterface:
         payload = {'city': city}
         res = requests.get(url, params=payload)
         forecast = res.json()['forecasts'][1]
-        # たまに取れないことがあるので、取れない場合は例外を捕捉して"-"とする
+        # たまに取れないことがあるので、取れない場合は例外を捕捉して"--"とする
         try:
             weather = forecast['telop']
         except:
             print('Can not get weather on %s'%city)
-            weather = '-'
+            weather = '--'
         try:
             max_t = forecast['temperature']['max']['celsius']
         except:
             print('Can not get max temperature on %s'%city)
-            max_t = '-'
+            max_t = '--'
         try:
             min_t = forecast['temperature']['min']['celsius']
         except:
             print('Can not get min temperature on %s'%city)
-            min_t = '-'
+            min_t = '--'
         return {'weather': weather, 'max': max_t, 'min': min_t}
