@@ -23,6 +23,16 @@ def generate_from_template(directory, template_file, data):
     template = env.get_template(template_file)
     return str(template.render(data))
 
+def generate_data_wrapper(web, pattern):
+    # pattern毎に必要なデータを取得する
+    if pattern == 'morning':
+        return generate_data_for_morning(web)
+    elif pattern == 'night':
+        return generate_data_for_night(web)
+    else:
+        # patternに一致しない場合は例外で終了
+        raise ValueError('Pattern "%s" is not defined')
+
 def generate_data_for_morning(web):
     # 朝のつぶやき用の情報を取得する
     today = datetime.date.today()
@@ -68,8 +78,8 @@ def generate_data_for_night(web):
             'max_nagoya': forecast_nagoya['max'],
             'min_nagoya': forecast_nagoya['min']}
 
-def morning_tweet():
-    # Web用のインスタンスを生成してつぶやきをポストする(朝用)
+def tweet_wrapper(pattern):
+    # Web用のインスタンスを生成してつぶやきをポストする
     print('/*--- tweet begin ---*/')
     login_url = config.get('pcmax', 'login_url')
     login_user = os.environ.get('LOGIN_USER')
@@ -77,27 +87,8 @@ def morning_tweet():
     web = WebInterface(login_url, login_user, login_password)
     tweet_url = config.get('pcmax', 'tweet_url').replace('ROOM', PURE)
     tweet_input = web.get_tweet_input(tweet_url) 
-    data = generate_data_for_morning(web)
-    tweet_text = generate_from_template('template', 'morning.j2', data).encode('shift_jis')
-    print(datetime.datetime.now().strftime('%Y/%m/%d %H:%M'))
-    print(tweet_text.decode('shift_jis'))
-    print(web.post_tweet(tweet_url, tweet_input, tweet_text).status_code)
-    print('/*--- tweet end ---*/')
-    print('')
-    print('Bot is aliving...')
-    print('') 
-
-def night_tweet():
-    #  Web用のインスタンスを生成してつぶやきをポストする(夜用)
-    print('/*--- tweet begin ---*/')
-    login_url = config.get('pcmax', 'login_url')
-    login_user = os.environ.get('LOGIN_USER')
-    login_password = os.environ.get('LOGIN_PASSWORD')
-    web = WebInterface(login_url, login_user, login_password)
-    tweet_url = config.get('pcmax', 'tweet_url').replace('ROOM', PURE)
-    tweet_input = web.get_tweet_input(tweet_url) 
-    data = generate_data_for_night(web)
-    tweet_text = generate_from_template('template', 'night.j2', data).encode('shift_jis')
+    data = generate_data_wrapper(web, pattern)
+    tweet_text = generate_from_template('template', '%s.j2'%pattern, data).encode('shift_jis')
     print(datetime.datetime.now().strftime('%Y/%m/%d %H:%M'))
     print(tweet_text.decode('shift_jis'))
     print(web.post_tweet(tweet_url, tweet_input, tweet_text).status_code)
@@ -107,8 +98,8 @@ def night_tweet():
     print('')
 
 def main():
-    schedule.every().day.at(MORNING_TIME).do(morning_tweet)
-    schedule.every().day.at(NIGHT_TIME).do(night_tweet)
+    schedule.every().day.at(MORNING_TIME).do(tweet_wrapper, 'morning')
+    schedule.every().day.at(NIGHT_TIME).do(tweet_wrapper, 'night')
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
     print('')
     print('Bot is aliving...')
