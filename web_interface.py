@@ -1,6 +1,9 @@
+import re
 import random
 import requests
 from bs4 import BeautifulSoup
+
+wiki_pattern = re.compile(r'\[\[(.+?)\]\]')
 
 class WebInterface:
     def __init__(self, login_url, user, password):
@@ -34,6 +37,9 @@ class WebInterface:
         # Wikipedia APIから今日が何の日かを取得する
         def remove_wiki_tag(string):
             # Wikiフォーマットの整形用
+            links = wiki_pattern.findall(string)
+            for link in links:
+                string = string.replace(link, link.split('|')[0])
             return string.replace('==', '').replace('[[', '').replace(']]', '').replace('*', '').strip()
         
         def get_valid_events(event_list):
@@ -60,7 +66,6 @@ class WebInterface:
             day = remove_wiki_tag(event_list[0])
             del event_list[0]
             event_dict[day] = get_valid_events(event_list)
-        
         return random.choice(event_dict[date_str])
 
     def get_today_weather(self, url, city):
