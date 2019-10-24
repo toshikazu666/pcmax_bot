@@ -1,4 +1,5 @@
 import os
+import re
 import datetime
 from argparse import ArgumentParser
 from configparser import ConfigParser
@@ -16,6 +17,8 @@ NIGHT_TIME = '23:00'
 
 config = ConfigParser()
 config.read('settings.ini')
+
+event_pattern = re.compile(r'（.+年）$')
 
 def generate_from_template(directory, template_file, data):
     # jinja2テンプレートからつぶやきを生成する
@@ -43,11 +46,17 @@ def generate_data_for_morning(web):
     url = config.get('event', 'url').replace('MONTH', month)
     date = '%s月%s日' % (month, day)
     event = web.get_today_event(url, date)
+    if event_pattern.search(event):
+        # 歴史上の出来事なのか記念日なのかで語尾を使い分ける
+        end_word = 'ガアッタ日ダソウデス。'
+    else:
+        end_word = 'ダソウデス。'
     return {'pattern': 'morning',
             'month': month,
             'day': day,
             'weekday': weekday,
-            'event': event}
+            'event': event,
+            'end_word': end_word}
 
 def generate_data_for_night(web):
     # 夜のつぶやき用の情報を取得する
