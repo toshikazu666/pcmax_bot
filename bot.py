@@ -1,7 +1,6 @@
 import os
 import re
 import datetime
-from argparse import ArgumentParser
 from configparser import ConfigParser
 import time
 import schedule
@@ -95,7 +94,7 @@ def tweet_wrapper(pattern):
     login_password = os.environ.get('LOGIN_PASSWORD')
     web = WebInterface(login_url, login_user, login_password)
     tweet_url = config.get('pcmax', 'tweet_url').replace('ROOM', PURE)
-    tweet_input = web.get_tweet_input(tweet_url) 
+    tweet_input = web.get_tweet_input(tweet_url)
     data = generate_data_wrapper(web, pattern)
     tweet_text = generate_from_template('template', '%s.j2'%pattern, data).encode('shift_jis')
     print(datetime.datetime.now().strftime('%Y/%m/%d %H:%M'))
