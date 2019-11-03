@@ -3,8 +3,8 @@
 
 # 使い方
 ## 動作確認環境
-- Ubuntu 18.04.2 LTS on WSL
-- Python 3.6.8
+- Raspbian GNU/Linux 10 (buster)
+- Python 3.7.3
     - pipenv
 
 ## 実行方法
@@ -31,3 +31,16 @@ pipenv run python bot.py
         - Livedoor APIから東京、大阪、名古屋の翌日の天気予報を取得して投稿する
 - botの停止方法
     - Ctrl + Cなど
+
+## チェッカー
+### POSTするつぶやきの文面をチェック
+~~~
+pipenv run python check_output.py
+~~~
+- つぶやきの文面を標準出力する
+
+### つぶやきがPOSTできるかをチェック
+~~~
+pipenv run python check_tweet.py
+~~~
+- テスト用の文面をPOSTする
