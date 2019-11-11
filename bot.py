@@ -17,7 +17,7 @@ NIGHT_TIME = '23:00'
 config = ConfigParser()
 config.read('settings.ini')
 
-event_pattern = re.compile(r'（.+年）$')
+event_pattern = re.compile(r'（.+年.*?）$')
 
 def generate_from_template(directory, template_file, data):
     # jinja2テンプレートからつぶやきを生成する
