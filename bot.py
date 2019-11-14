@@ -69,9 +69,11 @@ def generate_data_for_night(web):
     tokyo = config.get('weather', 'tokyo')
     osaka = config.get('weather', 'osaka')
     nagoya = config.get('weather', 'nagoya')
+    sapporo = config.get('weather', 'sapporo')
     forecast_tokyo = web.get_today_weather(url, tokyo)
     forecast_osaka = web.get_today_weather(url, osaka)
     forecast_nagoya = web.get_today_weather(url, nagoya)
+    forecast_sapporo = web.get_today_weather(url, sapporo)
     return {'pattern': 'night',
             'month': month,
             'day': day,
@@ -84,7 +86,10 @@ def generate_data_for_night(web):
             'min_osaka': forecast_osaka['min'],
             'weather_nagoya': forecast_nagoya['weather'],
             'max_nagoya': forecast_nagoya['max'],
-            'min_nagoya': forecast_nagoya['min']}
+            'min_nagoya': forecast_nagoya['min'],
+            'weather_sapporo': forecast_sapporo['weather'],
+            'max_sapporo': forecast_sapporo['max'],
+            'min_sapporo': forecast_sapporo['min']}
 
 def tweet_wrapper(pattern):
     # Web用のインスタンスを生成してつぶやきをポストする
