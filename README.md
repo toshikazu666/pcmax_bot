@@ -28,7 +28,7 @@ pipenv run python bot.py
     - 07:00に投稿するつぶやき
         - Wikipedia APIから「今日は何の日」の情報を取得して投稿する
     - 23:00に投稿するつぶやき
-        - Livedoor APIから東京、大阪、名古屋の翌日の天気予報を取得して投稿する
+        - Livedoor APIから東京、大阪、名古屋、札幌の翌日の天気予報を取得して投稿する
 - botの停止方法
     - Ctrl + Cなど
 
