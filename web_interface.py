@@ -43,12 +43,13 @@ class WebInterface:
             return string.replace('==', '').replace('[[', '').replace(']]', '').replace('*', '').strip()
         
         def get_valid_events(event_list):
-            # 60文字より少ないイベントのみ対象(文字数制限対策)
+            # 要素がコメントアウトされていない、かつ60文字より少ないイベントのみ対象
             events = []
             for event in event_list:
-                e = remove_wiki_tag(event)
-                if len(e) < 60:
-                    events.append(e)
+                if '<!--' not in event:
+                    e = remove_wiki_tag(event)
+                    if len(e) < 60:
+                        events.append(e)
             return events
 
         # 月を指定して、日ごとが何の日かのリストを取得する
