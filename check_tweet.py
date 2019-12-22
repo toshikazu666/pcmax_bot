@@ -17,7 +17,7 @@ def main():
     pcmax = Pcmax(login_url, login_user, login_password)
 
 
-    tweet_url = config.get('pcmax', 'tweet_url').replace('ROOM', PURE)
+    tweet_url = config.get('pcmax', 'tweet_post_url').replace('ROOM', PURE)
     tweet_input = pcmax.get_tweet_input(tweet_url)
     tweet_text = generate_from_template('template', 'test.j2', {'time': now}).encode('shift-jis')
     
