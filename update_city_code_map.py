@@ -14,7 +14,9 @@ def get_city_code_re(city_code_dict):
 def output_map(city_code_re, city_code_dict):
     # 市町村のマッチングパターン、市町村とコードの対応付けをフォーマットしてファイル出力する
     text_array = []
-    text = "CITY_PATTERN = r'%s'" % city_code_re
+    text_array.append('import re')
+    text_array.append('')
+    text = "CITY_PATTERN = re.compile(r'%s')" % city_code_re
     text_array.append(text)
     text_array.append('')
     text_array.append('CITY_CODE_MAP = {')
