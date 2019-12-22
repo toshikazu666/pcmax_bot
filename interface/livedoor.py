@@ -1,12 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
 
+TODAY = 0
+TOMORROW = 1
+
 class Livedoor:
-    def get_tomorrow_weather(self, weather_forecast_url, city):
+    def get_weather(self, weather_forecast_url, city, date=TODAY):
         # LiveDoor API から翌日の天気情報を取得する
         payload = {'city': city}
         res = requests.get(weather_forecast_url, params=payload)
-        forecast = res.json()['forecasts'][1]
+        forecast = res.json()['forecasts'][date]
         # タイミングによって取れないことがあるので、取れない場合は例外を捕捉して"--"とする
         try:
             weather = forecast['telop']
