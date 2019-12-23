@@ -341,9 +341,10 @@ def tweet_wrapper(pattern):
 
 def main():
     schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(listener)
-    #schedule.every().day.at(MORNING_TIME).do(tweet_wrapper, 'morning')
-    #schedule.every().day.at(NIGHT_TIME).do(tweet_wrapper, 'night')
+    schedule.every().day.at(MORNING_TIME).do(tweet_wrapper, 'morning')
+    schedule.every().day.at(NIGHT_TIME).do(tweet_wrapper, 'night')
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
+    print('Listener active every %s minutes'%str(LISTEN_INTERVAL_MINUTES))
     print('')
     print('Bot is aliving...')
     print('')
