@@ -2,7 +2,8 @@ import os
 import datetime
 from configparser import ConfigParser
 from jinja2 import Template, Environment, FileSystemLoader
-from bot import generate_from_template, PURE
+from bot import generate_from_template
+from definition import PURE
 from interface.pcmax import Pcmax
 
 def main():
