@@ -5,7 +5,7 @@ import requests
 WIKI_PATTERN = re.compile(r'\[\[(.+?)\]\]')
 
 class Wikipedia:
-    def get_today_event(self, url, date_str):
+    def get_date_event(self, url, date_str):
         # Wikipedia APIから今日が何の日かを取得する
         def remove_wiki_tag(string):
             # Wikiフォーマットの整形用
