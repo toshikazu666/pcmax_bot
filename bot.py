@@ -83,7 +83,6 @@ def comment_wrapper(tweet, today, greeting):
     for comment in comment_list:
         # すでにコメントしている場合は処理をスキップ
         if comment['user'] == MY_NAME:
-            print('skipped')
             return 0
 
     # つぶやきのテキストを解析してコメント文を作成する
@@ -354,3 +353,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
