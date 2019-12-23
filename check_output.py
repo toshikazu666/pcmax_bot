@@ -3,12 +3,7 @@ from configparser import ConfigParser
 from bot import generate_from_template, generate_data_wrapper, generate_data_for_morning, generate_data_for_night
 
 def main():
-    config = ConfigParser()
-    config.read('settings.ini')
 
-    login_url = config.get('pcmax', 'login_url')
-    login_user = os.environ.get('LOGIN_USER')
-    login_password = os.environ.get('LOGIN_PASSWORD')
     morning_data = generate_data_wrapper('morning')
     night_data = generate_data_wrapper('night')
     moring_tweet_text = generate_from_template('template', 'morning.j2', morning_data).encode('shift_jis')
