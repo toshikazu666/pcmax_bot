@@ -41,6 +41,19 @@ from city_code_map import CITY_CODE_MAP
 config = ConfigParser()
 config.read('settings.ini')
 
+def try_wrapper(func, args=None):
+    try:
+        if args:
+            func(args)
+        else:
+            func()
+    except Exception as e:
+        now = datetime.datetime.now().strftime('%Y%m%d %H:%M:%S')
+        print('[%s] some exception was captured, skip process'%now)
+        print('-----')
+        print(e)
+        print('-----')
+
 def listener():
     # つぶやきを確認し、トリガーとなるつぶやきがあるかを確認する
     login_url = config.get('pcmax', 'login_url')
@@ -58,6 +71,8 @@ def listener():
     # 一覧の中にトリガーとなるワードを含むつぶやきがあるかを確認する
     target_tweet_list = get_target_tweet_list(tweet_list)
     
+    print('listener active...')
+
     today = datetime.date.today()
     # 時間帯によってあいさつを分ける
     greeting = get_greeting(datetime.datetime.now().hour)
@@ -98,6 +113,7 @@ def comment_wrapper(tweet, today, greeting):
     print(datetime.datetime.now().strftime('%Y/%m/%d %H:%M'))
     print(pcmax.post_comment(comment_list_url, comment_input, text).status_code)
     print('Bot is aliving...')
+    print('')
 
 def forecast_data4comment(month, day, city, city_code, date):
     # 天気予報のコメント用データを取得する
@@ -319,7 +335,7 @@ def generate_data_for_night():
             'weekday': weekday,
             'forecasts': forecasts}
 
-def tweet_wrapper(pattern):
+def post_tweet(pattern):
     # PCMAXにログインしてつぶやきを投稿するためのインスタンスを生成し、つぶやきをPOSTする
     login_url = config.get('pcmax', 'login_url')
     login_user = os.environ.get('LOGIN_USER')
@@ -339,9 +355,9 @@ def tweet_wrapper(pattern):
     print('Bot is aliving...')
 
 def main():
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(listener)
-    schedule.every().day.at(MORNING_TIME).do(tweet_wrapper, 'morning')
-    schedule.every().day.at(NIGHT_TIME).do(tweet_wrapper, 'night')
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener)
+    schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, 'morning')
+    schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, 'night')
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
     print('Listener active every %s minutes'%str(LISTEN_INTERVAL_MINUTES))
     print('')
