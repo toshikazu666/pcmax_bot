@@ -74,7 +74,7 @@ def listener():
     today = datetime.date.today()
     # 時間帯によってあいさつを分ける
     greeting = get_greeting(datetime.datetime.now().hour)
-    
+
     for target_tweet in target_tweet_list:
         # 対象のつぶやきに対してコメントをPOSTする
         thread = threading.Thread(target=comment_wrapper, args=[target_tweet, today, greeting])
