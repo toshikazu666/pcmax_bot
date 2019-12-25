@@ -24,6 +24,9 @@ export LOGIN_USER="ログインユーザ名" LOGIN_PASSWORD="ログインパス�
 - exportまたはprintenvを実行し、LOGIN_USER/LOGIN_PASSWORDに値が設定されていればOK
 
 ### botのデプロイ
+- botとして動作するアカウントのニックネームを定義
+    - definition.py の変数 MY_NAME に、上記のログイン情報設定で使用したアカウントのニックネームを記載する
+    
 - 地名とIDのMAPを作成(更新)する(天気予報で必要)
 ~~~
 python upedate_city_code_map
