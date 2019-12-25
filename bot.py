@@ -71,8 +71,6 @@ def listener():
     # 一覧の中にトリガーとなるワードを含むつぶやきがあるかを確認する
     target_tweet_list = get_target_tweet_list(tweet_list)
     
-    print('listener active...')
-
     today = datetime.date.today()
     # 時間帯によってあいさつを分ける
     greeting = get_greeting(datetime.datetime.now().hour)
@@ -355,7 +353,7 @@ def post_tweet(pattern):
     print('Bot is aliving...')
 
 def main():
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener)
+    #schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener)
     schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, 'morning')
     schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, 'night')
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
