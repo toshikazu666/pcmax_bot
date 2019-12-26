@@ -42,6 +42,7 @@ config = ConfigParser()
 config.read('settings.ini')
 
 def try_wrapper(func, args=None):
+    # 例外でbotが死なないようにラップする
     try:
         if args:
             func(args)
@@ -77,14 +78,14 @@ def listener():
 
     for target_tweet in target_tweet_list:
         # 対象のつぶやきに対してコメントをPOSTする
-        thread = threading.Thread(target=comment_wrapper, args=[target_tweet, today, greeting])
+        thread = threading.Thread(target=post_comment, args=[target_tweet, today, greeting])
         thread.start()
 
 def get_target_tweet_list(tweet_list):
     # 特定ワードを含むつぶやきを抽出する
     return [tweet for tweet in tweet_list if LISTEN_PATTERN.search(tweet['text'])]
 
-def comment_wrapper(tweet, today, greeting):
+def post_comment(tweet, today, greeting):
     # コメントをPOSTする
     login_url = config.get('pcmax', 'login_url')
     login_user = os.environ.get('LOGIN_USER')

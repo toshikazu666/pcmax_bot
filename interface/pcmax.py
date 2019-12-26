@@ -27,7 +27,7 @@ class Pcmax:
         return {i['name']: i['value'] for i in inputs}
 
     def post_tweet(self, tweet_post_url, input_values, text):
-        # つぶやきを投稿する
+        # つぶやきPOSTする
         input_values['tweet_body'] = text
         res = self.session.post(tweet_post_url, data=input_values)
         res.raise_for_status()
@@ -65,6 +65,7 @@ class Pcmax:
         return {i['name']: i['value'] for i in inputs}
 
     def post_comment(self, comment_list_url, input_values, text):
+        # コメントをPOSTする
         input_values['comment'] = text
         res = self.session.post(comment_list_url, data=input_values)
         res.raise_for_status()
