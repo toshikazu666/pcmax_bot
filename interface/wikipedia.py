@@ -26,7 +26,7 @@ class Wikipedia:
 
         # 月を指定して、日ごとが何の日かのリストを取得する
         res = requests.get(url)
-        content = list(res.json()['query']['pages'].values())[0]['revisions'][0]['*']
+        content = list(res.json()['query']['pages'].values())[0]['revisions'][0]['*'].replace('</noinclude>', '\n')
         events_list = content.split('\n\n')
         # 余分な要素を削除
         del events_list[0]
