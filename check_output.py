@@ -1,13 +1,13 @@
 import os
 from configparser import ConfigParser
-from bot import generate_from_template, generate_data_wrapper, generate_data_for_morning, generate_data_for_night
+from bot import generate_from_template, generate_data_wrapper, generate_data_for_morning, generate_data_for_night, hi_encode
 
 def main():
 
     morning_data = generate_data_wrapper('morning')
     night_data = generate_data_wrapper('night')
-    moring_tweet_text = generate_from_template('template', 'morning.j2', morning_data).encode('shift_jis')
-    night_tweet_text = generate_from_template('template', 'night.j2', night_data).encode('shift_jis')
+    moring_tweet_text = hi_encode(generate_from_template('template', 'morning.j2', morning_data), 'shift_jis')
+    night_tweet_text = hi_encode(generate_from_template('template', 'night.j2', night_data), 'shift_jis')
     
     print('/*--- moring tweet text (shift-jis) ---*/')
     print(moring_tweet_text)

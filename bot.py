@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import emoji
 import datetime
 import schedule
 import threading
@@ -104,7 +105,7 @@ def post_comment(tweet, today, greeting):
     data['greeting'] = greeting
     data['user'] = tweet['user']
 
-    text = generate_from_template('template', 'comment.j2', data).encode('shift_jis')
+    text = hi_encode(generate_from_template('template', 'comment.j2', data), 'shift_jis')
     comment_input = pcmax.get_comment_input(comment_list_url)
     
     # コメントのPOST
@@ -276,6 +277,11 @@ def generate_from_template(directory, template_file, data):
     template = env.get_template(template_file)
     return str(template.render(data))
 
+def hi_encode(string, encoding):
+    # 絵文字を ＊ に変換してからshift_jisにエンコードする
+    rm_emoji = ''.join(['*' if s in emoji.UNICODE_EMOJI else s for s in string])
+    return rm_emoji.encode(encoding)
+
 def generate_data_wrapper(pattern):
     # pattern毎に必要なデータを取得する
     if pattern == 'morning':
@@ -345,7 +351,7 @@ def post_tweet(pattern):
     tweet_input = pcmax.get_tweet_input(tweet_post_url)
 
     data = generate_data_wrapper(pattern)
-    tweet_text = generate_from_template('template', '%s.j2'%pattern, data).encode('shift_jis')
+    tweet_text = hi_encode(generate_from_template('template', '%s.j2'%pattern, data), 'shift_jis')
 
     # つぶやきのPOST
     print('/*--- tweet ---*/')
