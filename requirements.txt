@@ -1,5 +1,4 @@
 bs4
-emoji
 jinja2
 requests
 schedule

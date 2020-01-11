@@ -11,7 +11,6 @@ requests = "*"
 bs4 = "*"
 jinja2 = "*"
 pytest = "*"
-emoji = "*"
 
 [requires]
 python_version = "3.7"

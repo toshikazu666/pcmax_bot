@@ -6,7 +6,6 @@
 - Raspbian GNU/Linux 10 (buster)
 - Python 3.7.3
     - bs4
-    - emoji
     - jinja2
     - requests
     - schedule
