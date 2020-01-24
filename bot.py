@@ -43,13 +43,10 @@ from city_code_map import CITY_CODE_MAP
 config = ConfigParser()
 config.read('settings.ini')
 
-def try_wrapper(func, args=None):
+def try_wrapper(func, args=[]):
     # 例外でbotが死なないようにラップする
     try:
-        if args:
-            func(args)
-        else:
-            func()
+        func(*args)
     except Exception as e:
         now = datetime.datetime.now().strftime('%Y%m%d %H:%M:%S')
         print('[%s] some exception was captured, skip process'%now)
@@ -355,10 +352,10 @@ def post_tweet(pattern):
     print('Bot is aliving...')
 
 def main():
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, ADULT, ADULT_TAG)
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, PURE, PURE_TAG)
-    schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, 'morning')
-    schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, 'night')
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, [ADULT, ADULT_TAG])
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, [PURE, PURE_TAG])
+    schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, ['morning'])
+    schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, ['night'])
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
     print('Listener active every %s minutes'%str(LISTEN_INTERVAL_MINUTES))
     print('')
