@@ -55,7 +55,7 @@ def try_wrapper(func, args=None):
         print(e)
         print('-----')
 
-def listener():
+def listener(room):
     # つぶやきを確認し、トリガーとなるつぶやきがあるかを確認する
     login_url = config.get('pcmax', 'login_url')
     login_user = os.environ.get('LOGIN_USER')
@@ -66,7 +66,7 @@ def listener():
     # つぶやき一覧を取得する
     tweet_list = []
     for i in range(1, PAGE_THRESHOLD+1):
-        tweet_list_url = config.get('pcmax', 'tweet_list_url').replace('ROOM', ADULT).replace('PAGE', str(i))
+        tweet_list_url = config.get('pcmax', 'tweet_list_url').replace('ROOM', room).replace('PAGE', str(i))
         tweet_list += pcmax.get_tweet_list(tweet_list_url, ' adult')
 
     # 一覧の中にトリガーとなるワードを含むつぶやきがあるかを確認する
@@ -78,20 +78,20 @@ def listener():
 
     for target_tweet in target_tweet_list:
         # 対象のつぶやきに対してコメントをPOSTする
-        thread = threading.Thread(target=post_comment, args=[target_tweet, today, greeting])
+        thread = threading.Thread(target=post_comment, args=[target_tweet, today, greeting, room])
         thread.start()
 
 def get_target_tweet_list(tweet_list):
     # 特定ワードを含むつぶやきを抽出する
     return [tweet for tweet in tweet_list if LISTEN_PATTERN.search(tweet['text'])]
 
-def post_comment(tweet, today, greeting):
+def post_comment(tweet, today, greeting, room):
     # コメントをPOSTする
     login_url = config.get('pcmax', 'login_url')
     login_user = os.environ.get('LOGIN_USER')
     login_password = os.environ.get('LOGIN_PASSWORD')
     pcmax = Pcmax(login_url, login_user, login_password)
-    comment_list_url = config.get('pcmax', 'comment_list_url').replace('ROOM', ADULT).replace('ID', tweet['id'])
+    comment_list_url = config.get('pcmax', 'comment_list_url').replace('ROOM', room).replace('ID', tweet['id'])
     comment_list = pcmax.get_comment_list(comment_list_url)
 
     for comment in comment_list:
@@ -354,7 +354,8 @@ def post_tweet(pattern):
     print('Bot is aliving...')
 
 def main():
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener)
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, ADULT)
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, PURE)
     schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, 'morning')
     schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, 'night')
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
