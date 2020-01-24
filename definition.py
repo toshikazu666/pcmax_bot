@@ -2,9 +2,12 @@ import re
 # botのニックネーム(適宜変更すること)
 MY_NAME = 'ﾓﾋｶﾝ社畜bot'
 
-# ピュア版とアダルト版のID(固定値)
+# ピュア版とアダルト版のIDとタグ(固定値)
 PURE = '1'
+PURE_TAG = ''
 ADULT = '2'
+ADULT_TAG = ' adult'
+
 
 # つぶやき一覧を取得するページ数
 PAGE_THRESHOLD = 1

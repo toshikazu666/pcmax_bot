@@ -22,7 +22,9 @@ from definition import CITIES
 from definition import MORNING_TIME
 from definition import NIGHT_TIME
 from definition import PURE
+from definition import PURE_TAG
 from definition import ADULT
+from definition import ADULT_TAG
 
 from definition import LISTEN_PATTERN
 from definition import WEATHER_PATTERN
@@ -55,7 +57,7 @@ def try_wrapper(func, args=None):
         print(e)
         print('-----')
 
-def listener(room):
+def listener(room, tag):
     # つぶやきを確認し、トリガーとなるつぶやきがあるかを確認する
     login_url = config.get('pcmax', 'login_url')
     login_user = os.environ.get('LOGIN_USER')
@@ -67,8 +69,7 @@ def listener(room):
     tweet_list = []
     for i in range(1, PAGE_THRESHOLD+1):
         tweet_list_url = config.get('pcmax', 'tweet_list_url').replace('ROOM', room).replace('PAGE', str(i))
-        tweet_list += pcmax.get_tweet_list(tweet_list_url, ' adult')
-
+        tweet_list += pcmax.get_tweet_list(tweet_list_url, tag)
     # 一覧の中にトリガーとなるワードを含むつぶやきがあるかを確認する
     target_tweet_list = get_target_tweet_list(tweet_list)
     
@@ -354,8 +355,8 @@ def post_tweet(pattern):
     print('Bot is aliving...')
 
 def main():
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, ADULT)
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, PURE)
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, ADULT, ADULT_TAG)
+    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, PURE, PURE_TAG)
     schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, 'morning')
     schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, 'night')
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
@@ -369,4 +370,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
