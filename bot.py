@@ -98,7 +98,7 @@ def post_comment(tweet, today, greeting, room):
             return 0
 
     # つぶやきのテキストを解析してコメント文を作成する
-    data = parser(tweet['text'], today, greeting)
+    data = parser(tweet['text'], today)
     data['greeting'] = greeting
     data['user'] = tweet['user']
 
@@ -127,7 +127,7 @@ def event_data4comment(month, day, date):
     end_word = get_end_word(event)
     return {'pattern': 'event', 'month': month, 'day': day, 'event': event, 'end_word': end_word}
 
-def parser(text, today, greeting):
+def parser(text, today):
     # つぶやきを解析する
     if WEATHER_PATTERN.search(text):
         # 天気について解析
