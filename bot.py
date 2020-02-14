@@ -156,14 +156,14 @@ def parser(text, today):
                 # 日付を解析
                 matches = date_match.groups()
                 month_day = str_date2int(matches[0], matches[1])
-                if month_day == (today.month, today.day):
+                if month_day == [today.month, today.day]:
                     # 日付が今日の場合
                     date = TODAY
                     d = today
                     return forecast_data4comment(str(d.month), str(d.day), city, city_code, date)
 
                 tomorrow = today + datetime.timedelta(days=1)
-                if month_day == (tomorrow.month, tomorrow.day):
+                if month_day == [tomorrow.month, tomorrow.day]:
                     # 日付が明日の場合
                     date = TOMORROW
                     d = today + datetime.timedelta(days=1)
@@ -353,7 +353,7 @@ def post_tweet(pattern):
 
 def main():
     schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, [ADULT, ADULT_TAG])
-    schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, [PURE, PURE_TAG])
+    #schedule.every(LISTEN_INTERVAL_MINUTES).minutes.do(try_wrapper, listener, [PURE, PURE_TAG])
     schedule.every().day.at(MORNING_TIME).do(try_wrapper, post_tweet, ['morning'])
     schedule.every().day.at(NIGHT_TIME).do(try_wrapper, post_tweet, ['night'])
     print('Tweet schedule set at %s, %s'%(MORNING_TIME, NIGHT_TIME))
