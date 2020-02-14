@@ -38,6 +38,8 @@ DAY_BEFORE_YESTERDAY_PATTERN = re.compile(r'一昨日|おととい')
 DATE_PATTERN = re.compile(r'([0-9０-９]?[0-9０-９])[月/／]([0-9０-９]?[0-9０-９])')
 WEATHER_PATTERN = re.compile(r'天気|てんき')
 EVENT_PATTERN = re.compile(r'(なに|なん|何)(があった|の)(ひ|日)')
+UNSEI_PATTERN = re.compile(r'運勢|うんせい')
+UMARE_PATTERN = re.compile(r'([0-9０-９]?[0-9０-９])(月|がつ)[う生]まれ')
 
 # 曜日の定義
 WEEKDAYS = {
