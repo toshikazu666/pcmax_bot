@@ -6,9 +6,11 @@ import schedule
 import threading
 from configparser import ConfigParser
 from jinja2 import Template, Environment, FileSystemLoader
+
 from interface.pcmax import Pcmax
 from interface.wikipedia import Wikipedia
 from interface.livedoor import Livedoor
+from interface.unsei import Unsei
 
 from definition import MY_NAME
 from definition import PAGE_THRESHOLD
@@ -36,6 +38,8 @@ from definition import SOON_PATTERN
 from definition import YESTERDAY_PATTERN
 from definition import DAY_BEFORE_YESTERDAY_PATTERN
 from definition import DATE_PATTERN
+from definition import UNSEI_PATTERN
+from definition import UMARE_PATTERN
 
 from city_code_map import CITY_PATTERN
 from city_code_map import CITY_CODE_MAP
@@ -126,6 +130,14 @@ def event_data4comment(month, day, date):
     event = wikipedia.get_date_event(url, date)
     end_word = get_end_word(event)
     return {'pattern': 'event', 'month': month, 'day': day, 'event': event, 'end_word': end_word}
+
+def unsei4comment(today, umare_month):
+    # 今日の運勢データを取得する
+    unsei = Unsei()
+    today_str = today.strftime('%Y/%m/%d')
+    url = config.get('unsei', 'url').replace('DATE', today_str)
+    today_unsei = unsei.get_unsei(url, today_str, umare_month)
+    return {'pattern': 'unsei', 'month': umare_month, 'rank': today_unsei['rank'], 'content': today_unsei['content'], 'color': today_unsei['color'], 'item': today_unsei['item']}
 
 def parser(text, today):
     # つぶやきを解析する
@@ -229,6 +241,19 @@ def parser(text, today):
                 return event_data4comment(str(month_day[0]), str(month_day[1]), date)
 
         return {'pattern': 'null'}
+
+    elif UNSEI_PATTERN.search(text):
+        # 運勢を解析
+        umare_match = UMARE_PATTERN.search(text)
+        if umare_match:
+            # ○月生まれを解析する
+            umare = umare_match.groups()[0]
+            umare_month = str_date2int(umare, '1')[0]
+            if umare_month:
+                return unsei4comment(today, umare_month)
+        
+        return {'pattern': 'null'}
+
     else:
         return {'pattern': 'null'}
 
